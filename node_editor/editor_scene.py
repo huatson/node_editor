@@ -10,8 +10,10 @@ import math
 
 
 class NodeEditorScene(QGraphicsScene):
-    def __init__(self, parent=None):
+    def __init__(self, scene, parent=None):
         super(NodeEditorScene, self).__init__(parent)
+        # core scene
+        self._core_scene = scene
         # colors
         self._color_background = QColor("#393939")
         self._color_light = QColor("#2F2F2F")
@@ -32,15 +34,17 @@ class NodeEditorScene(QGraphicsScene):
         self._pen_green = QPen(self._color_green)
         self._pen_green.setWidth(3)
 
-        # scene
-        self._scene_width = 64000.0
-        self._scene_height = 64000.0
-        centered = QRectF(-self._scene_width//2,
-                          -self._scene_height//2,
-                          self._scene_width,
-                          self._scene_height)
-        self.setSceneRect(centered)
+        # size
+        self._scene_w = 0.0
+        self._scene_h = 0.0
+
         self.setBackgroundBrush(self._color_background)
+
+    def setGraphicsScene(self, width: float, height: float):
+        self._scene_h = height
+        self._scene_w = width
+        centered = QRectF(-width//2, -height//2, width, height)
+        self.setSceneRect(centered)
 
     def _draw_grid(self, painter: QPainter, rect: QRectF) -> None:
         area_left = int(math.floor(rect.left()))
@@ -66,8 +70,8 @@ class NodeEditorScene(QGraphicsScene):
                 guides_lines.append(QLine(area_left, y, area_right, y))
 
         # red line
-        middle_scene_x = math.floor(self._scene_width//2)
-        middle_scene_y = math.floor(self._scene_height//2)
+        middle_scene_x = math.floor(self._scene_w//2)
+        middle_scene_y = math.floor(self._scene_h//2)
         red_line = QLine(0, -middle_scene_x, 0, middle_scene_x)
         green_line = QLine(-middle_scene_y, 0, middle_scene_y, 0)
 
@@ -81,5 +85,5 @@ class NodeEditorScene(QGraphicsScene):
         painter.drawLine(green_line)
 
     def drawBackground(self, painter: QPainter, rect: QRectF):
-        super().drawBackground(painter, rect)
+        super(NodeEditorScene, self).drawBackground(painter, rect)
         self._draw_grid(painter, rect)

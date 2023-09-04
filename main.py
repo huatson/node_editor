@@ -2,7 +2,7 @@
 Node Editor Sample
 """
 
-from node_editor.window import NodeEditorWindow
+from node_editor.editor_window import NodeEditorWindow
 from PyQt5.QtWidgets import QApplication
 import sys
 

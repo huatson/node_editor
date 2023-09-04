@@ -13,10 +13,12 @@ class NodeEditorView(QGraphicsView):
         self._scene = scene
 
         # zoom
-        self._zoom_multiplier = 1.25
-        self._zoom_value = 10
+        self._zoom_in_multiplier = 1.25
+        self._zoom_out_multiplier = (1.0/self._zoom_in_multiplier)
+        self._zoom_value = 0
         self._zoom_step = 1
-        self._zoom_range = [0, 10]
+        self._zoom_range = [-5, 10]
+        self._zoom_clamp = True
 
         # init
         self._init_view()
@@ -29,6 +31,8 @@ class NodeEditorView(QGraphicsView):
         self.setViewportUpdateMode(self.ViewportUpdateMode.FullViewportUpdate)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setTransformationAnchor(self.ViewportAnchor.AnchorUnderMouse)
+        self.setDragMode(self.DragMode.RubberBandDrag)
 
     def mouseLeftPressEvent(self, event: QMouseEvent):
         return super(NodeEditorView, self).mousePressEvent(event)
@@ -90,4 +94,20 @@ class NodeEditorView(QGraphicsView):
             super(NodeEditorView, self).mouseReleaseEvent(event)
 
     def wheelEvent(self, event: QWheelEvent):
-        return super(NodeEditorView, self).wheelEvent(event)
+        self._zoom_out_multiplier = (1.0/self._zoom_in_multiplier)
+        angre_delta_y = event.angleDelta().y()
+        if angre_delta_y > 0:
+            zoom_scale = self._zoom_in_multiplier
+            self._zoom_value += self._zoom_step
+        else:
+            zoom_scale = self._zoom_out_multiplier
+            self._zoom_value -= self._zoom_step
+        is_clamped = False
+        if self._zoom_value < self._zoom_range[0]:
+            self._zoom_value = self._zoom_range[0]
+            is_clamped = True
+        if self._zoom_value > self._zoom_range[1]:
+            self._zoom_value = self._zoom_range[1]
+            is_clamped = True
+        if not is_clamped or not self._zoom_clamp:
+            self.scale(zoom_scale, zoom_scale)
