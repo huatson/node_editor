@@ -2,7 +2,6 @@
 Window
 """
 
-
 # PyQt
 from PyQt5.QtWidgets import (QWidget,
                              QVBoxLayout,

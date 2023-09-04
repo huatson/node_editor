@@ -2,12 +2,11 @@
 Scene
 """
 
-import math
-
 # PyQt
-from PyQt5.QtCore import QRectF, QLine
-from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtGui import QColor, QPainter, QPen
+from PyQt5.QtWidgets import QGraphicsScene
+from PyQt5.QtCore import QRectF, QLine
+import math
 
 
 class NodeEditorScene(QGraphicsScene):
