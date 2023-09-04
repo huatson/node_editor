@@ -67,8 +67,10 @@ class NodeEditorScene(QGraphicsScene):
                 guides_lines.append(QLine(area_left, y, area_right, y))
 
         # red line
-        red_line = QLine(0, -32000, 0, 32000)
-        green_line = QLine(-32000, 0, 32000, 0)
+        middle_scene_x = math.floor(self._scene_width//2)
+        middle_scene_y = math.floor(self._scene_height//2)
+        red_line = QLine(0, -middle_scene_x, 0, middle_scene_x)
+        green_line = QLine(-middle_scene_y, 0, middle_scene_y, 0)
 
         painter.setPen(self._pen_light)
         painter.drawLines(*background_lines)
