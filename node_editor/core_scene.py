@@ -8,13 +8,11 @@ class Scene(object):
         self._scene_width = 64000.0
         self._scene_height = 64000.0
 
-        self._editor_scene = None
+        self.initUI()
 
-        self.init_ui()
-
-    def init_ui(self):
+    def initUI(self):
         self._editor_scene = NodeEditorScene(self, None)
-        self._editor_scene.setGraphicsScene(self._scene_width, self._scene_height)
+        self._editor_scene.setEditorScene(self._scene_width, self._scene_height)
 
     def add_node(self, node):
         self._nodes.append(node)

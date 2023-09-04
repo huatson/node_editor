@@ -34,16 +34,16 @@ class NodeEditorScene(QGraphicsScene):
         self._pen_green = QPen(self._color_green)
         self._pen_green.setWidth(3)
 
-        # size
-        self._scene_w = 0.0
-        self._scene_h = 0.0
+        # size defaults
+        self._scene_w = 64000.0
+        self._scene_h = 64000.0
 
         self.setBackgroundBrush(self._color_background)
 
-    def setGraphicsScene(self, width: float, height: float):
+    def setEditorScene(self, width: float, height: float):
         self._scene_h = height
         self._scene_w = width
-        centered = QRectF(-width//2, -height//2, width, height)
+        centered = QRectF(-width//2.0, -height//2.0, width, height)
         self.setSceneRect(centered)
 
     def _draw_grid(self, painter: QPainter, rect: QRectF) -> None:

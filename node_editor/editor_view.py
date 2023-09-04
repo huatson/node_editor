@@ -4,13 +4,20 @@ View
 
 from PyQt5.QtWidgets import QGraphicsView
 from PyQt5.QtGui import QPainter, QMouseEvent, QWheelEvent
-from PyQt5.QtCore import Qt, QEvent
+from PyQt5.QtCore import Qt, QEvent, QPoint, pyqtSignal
 
 
 class NodeEditorView(QGraphicsView):
+    #: pyqtSignal emitted when cursor position on the `Scene` has changed
+    scenePosChanged = pyqtSignal(int, int)
+
     def __init__(self, scene=None, parent=None):
         super(NodeEditorView, self).__init__(parent)
         self._scene = scene
+
+        # init
+        self.initUI()
+        self.setScene(self._scene)
 
         # zoom
         self._zoom_in_multiplier = 1.25
@@ -19,59 +26,44 @@ class NodeEditorView(QGraphicsView):
         self._zoom_step = 1
         self._zoom_range = [-5, 10]
         self._zoom_clamp = True
+        self.last_scene_mouse_position = QPoint(0, 0)
 
-        # init
-        self._init_view()
-        self.setScene(self._scene)
-
-    def _init_view(self) -> None:
+    def initUI(self) -> None:
         self.setRenderHints(QPainter.RenderHint.Antialiasing
                             | QPainter.RenderHint.TextAntialiasing
-                            | QPainter.RenderHint.HighQualityAntialiasing)
+                            | QPainter.RenderHint.HighQualityAntialiasing
+                            | QPainter.RenderHint.SmoothPixmapTransform)
         self.setViewportUpdateMode(self.ViewportUpdateMode.FullViewportUpdate)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.setTransformationAnchor(self.ViewportAnchor.AnchorUnderMouse)
         self.setDragMode(self.DragMode.RubberBandDrag)
+        self.setAcceptDrops(True)
+
+    # PRESS EVENTS
 
     def mouseLeftPressEvent(self, event: QMouseEvent):
-        return super(NodeEditorView, self).mousePressEvent(event)
+        super(NodeEditorView, self).mousePressEvent(event)
 
     def mouseRightPressEvent(self, event: QMouseEvent):
         release_event = QMouseEvent(QEvent.Type.MouseButtonRelease,
                                     event.localPos(),
                                     event.screenPos(),
-                                    Qt.LeftButton,
-                                    Qt.NoButton,
+                                    Qt.MouseButton.LeftButton,
+                                    Qt.MouseButton.NoButton,
                                     event.modifiers())
         super(NodeEditorView, self).mouseReleaseEvent(release_event)
         self.setDragMode(self.DragMode.ScrollHandDrag)
         drag_event = QMouseEvent(event.type(),
                                  event.localPos(),
                                  event.screenPos(),
-                                 Qt.LeftButton,
-                                 event.buttons() | Qt.LeftButton,
+                                 Qt.MouseButton.LeftButton,
+                                 event.buttons() | Qt.MouseButton.LeftButton,
                                  event.modifiers())
         super(NodeEditorView, self).mousePressEvent(drag_event)
 
     def mouseMiddlePressEvent(self, event: QMouseEvent):
-        return super(NodeEditorView, self).mousePressEvent(event)
-
-    def mouseLeftReleaseEvent(self, event: QMouseEvent):
-        return super(NodeEditorView, self).mousePressEvent(event)
-
-    def mouseRightReleaseEvent(self, event: QMouseEvent):
-        fakeEvent = QMouseEvent(event.type(),
-                                event.localPos(),
-                                event.screenPos(),
-                                Qt.LeftButton,
-                                event.buttons() & ~Qt.LeftButton,
-                                event.modifiers())
-        super(NodeEditorView, self).mouseReleaseEvent(fakeEvent)
-        self.setDragMode(self.DragMode.NoDrag)
-
-    def mouseMiddleReleaseEvent(self, event: QMouseEvent):
-        return super(NodeEditorView, self).mousePressEvent(event)
+        super(NodeEditorView, self).mousePressEvent(event)
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -83,6 +75,24 @@ class NodeEditorView(QGraphicsView):
         else:
             super(NodeEditorView, self).mousePressEvent(event)
 
+    # RELEASE EVENTS
+
+    def mouseLeftReleaseEvent(self, event: QMouseEvent):
+        super(NodeEditorView, self).mouseReleaseEvent(event)
+
+    def mouseRightReleaseEvent(self, event: QMouseEvent):
+        release_event = QMouseEvent(event.type(),
+                                    event.localPos(),
+                                    event.screenPos(),
+                                    Qt.MouseButton.LeftButton,
+                                    event.buttons() & ~Qt.MouseButton.LeftButton,
+                                    event.modifiers())
+        super(NodeEditorView, self).mouseReleaseEvent(release_event)
+        self.setDragMode(self.DragMode.NoDrag)
+
+    def mouseMiddleReleaseEvent(self, event: QMouseEvent):
+        super(NodeEditorView, self).mouseReleaseEvent(event)
+
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self.mouseLeftReleaseEvent(event)
@@ -92,6 +102,8 @@ class NodeEditorView(QGraphicsView):
             self.mouseMiddleReleaseEvent(event)
         else:
             super(NodeEditorView, self).mouseReleaseEvent(event)
+
+    # WHEEL
 
     def wheelEvent(self, event: QWheelEvent):
         self._zoom_out_multiplier = (1.0/self._zoom_in_multiplier)
@@ -111,3 +123,10 @@ class NodeEditorView(QGraphicsView):
             is_clamped = True
         if not is_clamped or not self._zoom_clamp:
             self.scale(zoom_scale, zoom_scale)
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        """Overriden Qt's ``mouseMoveEvent`` handling Scene/View logic"""
+        scenepos = self.mapToScene(event.pos())
+        self.last_scene_mouse_position = scenepos
+        self.scenePosChanged.emit(int(scenepos.x()), int(scenepos.y()))
+        super(NodeEditorView, self).mouseMoveEvent(event)

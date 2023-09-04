@@ -19,15 +19,8 @@ from node_editor.core_node import Node
 class NodeEditorWindow(QWidget):
     def __init__(self, parent=None) -> None:
         super(NodeEditorWindow, self).__init__(parent)
-        # scene
-        self._scene = Scene()
-        # self._editor_scene = self._scene._editor_scene
 
-        # view
-        self._view = NodeEditorView(self._scene._editor_scene, self)
-
-        # layout
-        self._layout = QVBoxLayout()
+        # init UI
         self.initUI()
 
     def initUI(self):
@@ -35,17 +28,26 @@ class NodeEditorWindow(QWidget):
         self.setWindowTitle("Node Editor")
 
         # layout
-        self._layout.setContentsMargins(5, 5, 5, 5)
+        self._layout = QVBoxLayout()
+        self._layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self._layout)
 
-        # sample node
-        node = Node(self._scene, "my node")
+        # scene
+        self._scene = Scene()
 
+        # view
+        self._view = NodeEditorView(self._scene._editor_scene, self)
+        # CHECK SET SCENE!! <--HERE-->
         self._layout.addWidget(self._view)
 
         self.show()
 
-        # self._add_content_debug()
+        # debug
+        # self._add_content_debug(self._scene._editor_scene)
+
+        # sample node
+        self._sample_node = Node(self._scene, "my node")
+        self._scene._editor_scene.addItem(self._sample_node._editor_node)
 
     def _add_content_debug(self, editor_scene):
         green_brush = QBrush(QColor("#00A300"))
