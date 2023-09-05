@@ -9,12 +9,14 @@ class ESocketType(Enum):
     """
     Sockets types
     """
-    INPUT = 0
-    OUTPUT = 1
+    INPUT_TOP = 0
+    INPUT_BOTTOM = 1
+    OUTPUT_TOP = 2
+    OUTPUT_BOTTOM = 3
 
 
 class Socket(object):
-    def __init__(self, node, idx=0, type=ESocketType.INPUT, position=[0.0, 0.0]) -> None:
+    def __init__(self, node, idx=0, type=ESocketType.INPUT_TOP, position=[0.0, 0.0]) -> None:
         self._node = node
         self._idx = idx
         self._type = type

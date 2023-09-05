@@ -26,19 +26,24 @@ class Node(object):
         self._sockets = []
 
         for (i, socket) in enumerate(self._inputs):
-            pos = self.getSocketPos(i, ESocketType.INPUT)
-            socket = Socket(self, i, ESocketType.INPUT, pos)
+            pos = self.getSocketPos(i, ESocketType.INPUT_BOTTOM)
+            socket = Socket(self, i, ESocketType.INPUT_BOTTOM, pos)
             self._sockets.append(socket)
 
         for (j, socket) in enumerate(self._outputs):
-            pos = self.getSocketPos(i, ESocketType.OUTPUT)
-            socket = Socket(self, j, ESocketType.OUTPUT, pos)
+            pos = self.getSocketPos(i, ESocketType.OUTPUT_TOP)
+            socket = Socket(self, j, ESocketType.OUTPUT_TOP, pos)
             self._sockets.append(socket)
 
-    def getSocketPos(self, idx: int, type=ESocketType.INPUT) -> []:
-        xpos = 0 if type == ESocketType.INPUT else self._editor_node._width
-        ypos = (
-            self._editor_node._title_height +
-            self._editor_node._padding +
-            self._editor_node._edge_size) + (idx*self._socket_spacing)
+    def getSocketPos(self, idx: int, type=ESocketType.INPUT_TOP) -> []:
+        xpos = 0 if type in (ESocketType.INPUT_TOP, ESocketType.INPUT_BOTTOM) else self._editor_node._width
+        idx_spaced = idx*self._socket_spacing
+        if type in (ESocketType.INPUT_BOTTOM, ESocketType.OUTPUT_BOTTOM):
+            # bottom position
+            ypos = self._editor_node._height-self._editor_node._edge_size-self._editor_node._padding - idx_spaced
+        else:
+            # top position
+            ypos = (self._editor_node._title_height
+                    + self._editor_node._padding
+                    + self._editor_node._edge_size) + idx_spaced
         return [xpos, ypos]
