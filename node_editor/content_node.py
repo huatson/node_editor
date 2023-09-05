@@ -13,9 +13,9 @@ from PyQt5.QtCore import QRectF, QLine
 from PyQt5.QtGui import QBrush, QColor
 
 
-class ContentWidgetNode(QWidget):
+class ContentNode(QWidget):
     def __init__(self, parent=None) -> None:
-        super(ContentWidgetNode, self).__init__(parent)
+        super(ContentNode, self).__init__(parent)
         self.initUI()
 
     def initUI(self):

@@ -14,7 +14,7 @@ from PyQt5.QtGui import QBrush, QColor, QPen, QFont
 from node_editor.core_scene import Scene
 from node_editor.editor_view import EditorView
 from node_editor.core_node import Node
-from node_editor.core_socket import Socket
+from node_editor.core_socket import Socket, ESocketType
 
 
 DEFAULT_SIZE_W = 1024
@@ -28,7 +28,7 @@ class EditorWindow(QWidget):
         self.app = app
 
         # styles
-        self._node_style_file = "qss/node_style.qss"
+        self._node_style_file = "D:\\dev\\WB\\node_editor\\node_editor\\styles\\node_style.qss"
         self.loadStyleSheet(self._node_style_file)
 
         # init UI
@@ -52,9 +52,11 @@ class EditorWindow(QWidget):
 
         self.show()
 
+        # create inputs and outputs
+        node_inputs = [1, 1, 1]
+        node_outputs = [1, 1]
+
         # create sample node
-        node_inputs = [Socket(), Socket(), Socket()]
-        node_outputs = [Socket(), Socket()]
         self._sample_node = Node(self._scene, "my node", node_inputs, node_outputs)
         self._scene._editor_scene.addItem(self._sample_node._editor_node)
 

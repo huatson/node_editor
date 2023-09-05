@@ -5,12 +5,12 @@ Editor node
 from PyQt5.QtWidgets import QWidget, QGraphicsItem, QGraphicsTextItem, QStyleOptionGraphicsItem, QGraphicsProxyWidget
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPainter, QPainterPath
 from PyQt5.QtCore import QRectF, Qt, QRect
-from node_editor.widget_node import ContentWidgetNode
+from node_editor.content_node import ContentNode
 import math
 
 
 class EditorNode(QGraphicsItem):
-    def __init__(self, core_node, content: ContentWidgetNode, parent=None) -> None:
+    def __init__(self, core_node, content: ContentNode, parent=None) -> None:
         super(EditorNode, self).__init__(parent)
         self._core_node = core_node
         self._content = content
@@ -92,11 +92,8 @@ class EditorNode(QGraphicsItem):
         self._node_content.setWidget(self._content)
 
     def boundingRect(self):
-        w = (2.0*self._edge_size+self._width)
-        h = (2.0*self._edge_size+self._height)
-        rect = QRectF(0, 0, w, h)
-        rect = rect.normalized()
-        return rect
+        rect = QRectF(0, 0, self._width, self._height)
+        return rect.normalized()
 
     def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget=None):
         # tittle
