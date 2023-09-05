@@ -1,5 +1,5 @@
 """
-Scene
+Editor Scene
 """
 
 # PyQt

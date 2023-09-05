@@ -2,7 +2,8 @@
 Core Node
 """
 
-from node_editor.editor_node import NodeEditorNode
+from node_editor.editor_node import EditorNode
+from node_editor.widget_node import ContentWidgetNode
 
 
 class Node(object):
@@ -10,7 +11,8 @@ class Node(object):
         self._scene = scene
         self._title = title
 
-        self._editor_node = NodeEditorNode(self)
+        self._content = ContentWidgetNode()
+        self._editor_node = EditorNode(self, self._content)
         self._scene.add_node(self)
 
         self._inputs = []

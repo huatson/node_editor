@@ -1,3 +1,7 @@
+"""
+Core Scene
+"""
+
 from node_editor.editor_scene import NodeEditorScene
 
 class Scene(object):

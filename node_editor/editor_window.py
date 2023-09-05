@@ -1,9 +1,9 @@
 """
-Window
+Editor Window
 """
 
 # PyQt
-from PyQt5.QtWidgets import (QWidget,
+from PyQt5.QtWidgets import (QMainWindow, QWidget,
                              QVBoxLayout,
                              QGraphicsItem,
                              QPushButton,
@@ -37,15 +37,11 @@ class NodeEditorWindow(QWidget):
 
         # view
         self._view = NodeEditorView(self._scene._editor_scene, self)
-        # CHECK SET SCENE!! <--HERE-->
         self._layout.addWidget(self._view)
 
         self.show()
 
-        # debug
-        # self._add_content_debug(self._scene._editor_scene)
-
-        # sample node
+        # create sample node
         self._sample_node = Node(self._scene, "my node")
         self._scene._editor_scene.addItem(self._sample_node._editor_node)
 

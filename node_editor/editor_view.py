@@ -1,5 +1,5 @@
 """
-View
+Editor View
 """
 
 from PyQt5.QtWidgets import QGraphicsView

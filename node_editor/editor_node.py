@@ -2,16 +2,18 @@
 Editor node
 """
 
-from PyQt5.QtWidgets import QGraphicsItem, QGraphicsTextItem, QStyleOptionGraphicsItem
+from PyQt5.QtWidgets import QWidget, QGraphicsItem, QGraphicsTextItem, QStyleOptionGraphicsItem, QGraphicsProxyWidget
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont, QPainter, QPainterPath
-from PyQt5.QtCore import QRectF, Qt
+from PyQt5.QtCore import QRectF, Qt, QRect
+from node_editor.widget_node import ContentWidgetNode
+import math
 
 
-class NodeEditorNode(QGraphicsItem):
-    def __init__(self, core_node, parent=None) -> None:
-        super(NodeEditorNode, self).__init__(parent)
+class EditorNode(QGraphicsItem):
+    def __init__(self, core_node, content: ContentWidgetNode, parent=None) -> None:
+        super(EditorNode, self).__init__(parent)
         self._core_node = core_node
-
+        self._content = content
         # colors
         self._color_background = QColor("#393939")
         self._color_light = QColor("#2F2F2F")
@@ -48,6 +50,9 @@ class NodeEditorNode(QGraphicsItem):
         self.initTitle()
         self.title = self._core_node._title
 
+        # content
+        self.initContent()
+
         # init UI
         self.initUI()
 
@@ -69,8 +74,22 @@ class NodeEditorNode(QGraphicsItem):
     def initTitle(self):
         self._title_item.setDefaultTextColor(self._title_color)
         self._title_item.setFont(self._title_font)
-        self._title_item.setTextWidth(self._width-self._padding)
+        self._title_item.setTextWidth(self._width-2.0*self._padding)
         self._title_item.setPos(self._padding, 0.0)
+
+    def initContent(self):
+        self._node_content = QGraphicsProxyWidget(self)
+
+        ax = int(self._edge_size)
+        ay = math.floor(self._title_height+self._edge_size)
+        aw = math.floor(self._width-2.0*self._edge_size)
+        ah = math.floor(self._height-2.0*self._edge_size-self._title_height)
+        content_rect = QRect(ax, ay, aw, ah)
+
+        if not self._content:
+            return
+        self._content.setGeometry(content_rect)
+        self._node_content.setWidget(self._content)
 
     def boundingRect(self):
         w = (2.0*self._edge_size+self._width)
