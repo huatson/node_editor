@@ -9,9 +9,9 @@ from PyQt5.QtCore import QRectF, QLine
 import math
 
 
-class NodeEditorScene(QGraphicsScene):
+class EditorScene(QGraphicsScene):
     def __init__(self, scene, parent=None):
-        super(NodeEditorScene, self).__init__(parent)
+        super(EditorScene, self).__init__(parent)
         # core scene
         self._core_scene = scene
         # colors
@@ -85,5 +85,5 @@ class NodeEditorScene(QGraphicsScene):
         painter.drawLine(green_line)
 
     def drawBackground(self, painter: QPainter, rect: QRectF):
-        super(NodeEditorScene, self).drawBackground(painter, rect)
+        super(EditorScene, self).drawBackground(painter, rect)
         self._draw_grid(painter, rect)

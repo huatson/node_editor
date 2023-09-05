@@ -3,28 +3,39 @@ Editor Window
 """
 
 # PyQt
-from PyQt5.QtWidgets import (QMainWindow, QWidget,
+from PyQt5.QtWidgets import (QApplication, QWidget,
                              QVBoxLayout,
                              QGraphicsItem,
                              QPushButton,
                              QTextEdit)
-from PyQt5.QtCore import QRectF, QLine
+from PyQt5.QtCore import QRectF, QLine, QFile, QIODevice
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont
 
 from node_editor.core_scene import Scene
-from node_editor.editor_view import NodeEditorView
+from node_editor.editor_view import EditorView
 from node_editor.core_node import Node
+from node_editor.core_socket import Socket
 
 
-class NodeEditorWindow(QWidget):
-    def __init__(self, parent=None) -> None:
-        super(NodeEditorWindow, self).__init__(parent)
+DEFAULT_SIZE_W = 1024
+DEFAULT_SIZE_H = 720
+
+
+class EditorWindow(QWidget):
+    def __init__(self, app: QApplication, parent=None) -> None:
+        super(EditorWindow, self).__init__(parent)
+
+        self.app = app
+
+        # styles
+        self._node_style_file = "qss/node_style.qss"
+        self.loadStyleSheet(self._node_style_file)
 
         # init UI
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(200, 200, 1920, 1080)
+        self.setGeometry(1500, 500, DEFAULT_SIZE_W, DEFAULT_SIZE_H)
         self.setWindowTitle("Node Editor")
 
         # layout
@@ -36,13 +47,15 @@ class NodeEditorWindow(QWidget):
         self._scene = Scene()
 
         # view
-        self._view = NodeEditorView(self._scene._editor_scene, self)
+        self._view = EditorView(self._scene._editor_scene, self)
         self._layout.addWidget(self._view)
 
         self.show()
 
         # create sample node
-        self._sample_node = Node(self._scene, "my node")
+        node_inputs = [Socket(), Socket(), Socket()]
+        node_outputs = [Socket(), Socket()]
+        self._sample_node = Node(self._scene, "my node", node_inputs, node_outputs)
         self._scene._editor_scene.addItem(self._sample_node._editor_node)
 
     def _add_content_debug(self, editor_scene):
@@ -68,3 +81,9 @@ class NodeEditorWindow(QWidget):
 
         line = editor_scene.addLine(-200, -200, 100, 100, outline_pen)
         line.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
+
+    def loadStyleSheet(self, filename: str):
+        file = QFile(filename)
+        file.open(QIODevice.OpenModeFlag.ReadOnly | QIODevice.OpenModeFlag.Text)
+        style_sheet = file.readAll().data()
+        self.app.setStyleSheet(str(style_sheet, encoding="utf-8"))

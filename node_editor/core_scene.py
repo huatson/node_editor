@@ -2,7 +2,7 @@
 Core Scene
 """
 
-from node_editor.editor_scene import NodeEditorScene
+from node_editor.editor_scene import EditorScene
 
 class Scene(object):
     def __init__(self) -> None:
@@ -15,7 +15,7 @@ class Scene(object):
         self.initUI()
 
     def initUI(self):
-        self._editor_scene = NodeEditorScene(self, None)
+        self._editor_scene = EditorScene(self, None)
         self._editor_scene.setEditorScene(self._scene_width, self._scene_height)
 
     def add_node(self, node):

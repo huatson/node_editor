@@ -7,12 +7,12 @@ from PyQt5.QtGui import QPainter, QMouseEvent, QWheelEvent
 from PyQt5.QtCore import Qt, QEvent, QPoint, pyqtSignal
 
 
-class NodeEditorView(QGraphicsView):
+class EditorView(QGraphicsView):
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
     scenePosChanged = pyqtSignal(int, int)
 
     def __init__(self, scene=None, parent=None):
-        super(NodeEditorView, self).__init__(parent)
+        super(EditorView, self).__init__(parent)
         self._scene = scene
 
         # init
@@ -43,7 +43,7 @@ class NodeEditorView(QGraphicsView):
     # PRESS EVENTS
 
     def mouseLeftPressEvent(self, event: QMouseEvent):
-        super(NodeEditorView, self).mousePressEvent(event)
+        super(EditorView, self).mousePressEvent(event)
 
     def mouseRightPressEvent(self, event: QMouseEvent):
         release_event = QMouseEvent(QEvent.Type.MouseButtonRelease,
@@ -52,7 +52,7 @@ class NodeEditorView(QGraphicsView):
                                     Qt.MouseButton.LeftButton,
                                     Qt.MouseButton.NoButton,
                                     event.modifiers())
-        super(NodeEditorView, self).mouseReleaseEvent(release_event)
+        super(EditorView, self).mouseReleaseEvent(release_event)
         self.setDragMode(self.DragMode.ScrollHandDrag)
         drag_event = QMouseEvent(event.type(),
                                  event.localPos(),
@@ -60,10 +60,10 @@ class NodeEditorView(QGraphicsView):
                                  Qt.MouseButton.LeftButton,
                                  event.buttons() | Qt.MouseButton.LeftButton,
                                  event.modifiers())
-        super(NodeEditorView, self).mousePressEvent(drag_event)
+        super(EditorView, self).mousePressEvent(drag_event)
 
     def mouseMiddlePressEvent(self, event: QMouseEvent):
-        super(NodeEditorView, self).mousePressEvent(event)
+        super(EditorView, self).mousePressEvent(event)
 
     def mousePressEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -73,12 +73,12 @@ class NodeEditorView(QGraphicsView):
         elif event.button() == Qt.MouseButton.MiddleButton:
             self.mouseMiddlePressEvent(event)
         else:
-            super(NodeEditorView, self).mousePressEvent(event)
+            super(EditorView, self).mousePressEvent(event)
 
     # RELEASE EVENTS
 
     def mouseLeftReleaseEvent(self, event: QMouseEvent):
-        super(NodeEditorView, self).mouseReleaseEvent(event)
+        super(EditorView, self).mouseReleaseEvent(event)
 
     def mouseRightReleaseEvent(self, event: QMouseEvent):
         release_event = QMouseEvent(event.type(),
@@ -87,11 +87,11 @@ class NodeEditorView(QGraphicsView):
                                     Qt.MouseButton.LeftButton,
                                     event.buttons() & ~Qt.MouseButton.LeftButton,
                                     event.modifiers())
-        super(NodeEditorView, self).mouseReleaseEvent(release_event)
+        super(EditorView, self).mouseReleaseEvent(release_event)
         self.setDragMode(self.DragMode.NoDrag)
 
     def mouseMiddleReleaseEvent(self, event: QMouseEvent):
-        super(NodeEditorView, self).mouseReleaseEvent(event)
+        super(EditorView, self).mouseReleaseEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -101,7 +101,7 @@ class NodeEditorView(QGraphicsView):
         elif event.button() == Qt.MouseButton.MiddleButton:
             self.mouseMiddleReleaseEvent(event)
         else:
-            super(NodeEditorView, self).mouseReleaseEvent(event)
+            super(EditorView, self).mouseReleaseEvent(event)
 
     # WHEEL
 
@@ -129,4 +129,4 @@ class NodeEditorView(QGraphicsView):
         scenepos = self.mapToScene(event.pos())
         self.last_scene_mouse_position = scenepos
         self.scenePosChanged.emit(int(scenepos.x()), int(scenepos.y()))
-        super(NodeEditorView, self).mouseMoveEvent(event)
+        super(EditorView, self).mouseMoveEvent(event)
