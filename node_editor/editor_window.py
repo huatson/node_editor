@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QApplication, QWidget,
                              QGraphicsItem,
                              QPushButton,
                              QTextEdit)
-from PyQt5.QtCore import QRectF, QLine, QFile, QIODevice
+from PyQt5.QtCore import QRectF, QLine, QFile, QIODevice, QPointF
 from PyQt5.QtGui import QBrush, QColor, QPen, QFont
 
 from node_editor.core_scene import Scene
@@ -57,8 +57,16 @@ class EditorWindow(QWidget):
         node_outputs = [1, 1]
 
         # create sample node
-        self._sample_node = Node(self._scene, "my node", node_inputs, node_outputs)
-        self._scene._editor_scene.addItem(self._sample_node._editor_node)
+        self._sample_node_a = Node(self._scene, "my node A", node_inputs, node_outputs)
+        self._sample_node_a.setPos(-350, -200)
+        self._sample_node_b = Node(self._scene, "my node B", node_inputs, node_outputs)
+        self._sample_node_b.setPos(-75, 0)
+        self._sample_node_c = Node(self._scene, "my node C", node_inputs, node_outputs)
+        self._sample_node_c.setPos(200, -150)
+        # add editor node to editor scene
+        self._scene._editor_scene.addItem(self._sample_node_a._editor_node)
+        self._scene._editor_scene.addItem(self._sample_node_b._editor_node)
+        self._scene._editor_scene.addItem(self._sample_node_c._editor_node)
 
     def _add_content_debug(self, editor_scene):
         green_brush = QBrush(QColor("#00A300"))

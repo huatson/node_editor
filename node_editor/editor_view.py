@@ -24,7 +24,7 @@ class EditorView(QGraphicsView):
         self._zoom_out_multiplier = (1.0/self._zoom_in_multiplier)
         self._zoom_value = 0
         self._zoom_step = 1
-        self._zoom_range = [-5, 10]
+        self._zoom_range = [-2, 5]
         self._zoom_clamp = True
         self.last_scene_mouse_position = QPoint(0, 0)
 
