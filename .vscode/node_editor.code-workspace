@@ -4,7 +4,17 @@
 			"path": ".."
 		}
 	],
-	"settings": {},
+	"settings": {
+		"python.testing.unittestArgs": [
+			"-v",
+			"-s",
+			"./node_editor",
+			"-p",
+			"test_*.py"
+		],
+		"python.testing.pytestEnabled": false,
+		"python.testing.unittestEnabled": true
+	},
 	"launch": {
 		"version": "0.2.0",
 		"configurations": [

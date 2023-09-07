@@ -44,52 +44,37 @@ class EditorWindow(QWidget):
         self.setLayout(self._layout)
 
         # scene
-        self._scene = Scene()
+        self._core_scene = Scene()
 
         # view
-        self._view = EditorView(self._scene._editor_scene, self)
-        self._layout.addWidget(self._view)
+        self._editor_view = EditorView(self._core_scene._editor_scene, self)
+        self._layout.addWidget(self._editor_view)
 
         self.show()
 
-        # create inputs and outputs
-        node_inputs = [1, 1, 1]
-        node_outputs = [1, 1]
-
-        # create sample node
-        self._sample_node_a = Node(self._scene, "my node A", node_inputs, node_outputs)
-        self._sample_node_a.setPos(-350, -200)
-        self._sample_node_b = Node(self._scene, "my node B", node_inputs, node_outputs)
-        self._sample_node_b.setPos(-75, 0)
-        self._sample_node_c = Node(self._scene, "my node C", node_inputs, node_outputs)
-        self._sample_node_c.setPos(200, -150)
-        # add editor node to editor scene
-        self._scene._editor_scene.addItem(self._sample_node_a._editor_node)
-        self._scene._editor_scene.addItem(self._sample_node_b._editor_node)
-        self._scene._editor_scene.addItem(self._sample_node_c._editor_node)
-
-    def _add_content_debug(self, editor_scene):
+    def _add_content_debug(self):
+        """content samples"""
         green_brush = QBrush(QColor("#00A300"))
         outline_pen = QPen(QColor("#171717"))
         outline_pen.setWidth(2)
         rect_pos = QRectF(-100, -100, 100, 100)
-        rect = editor_scene.addRect(rect_pos, outline_pen, green_brush)
+        rect = self._core_scene._editor_scene.addRect(rect_pos, outline_pen, green_brush)
         rect.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsMovable | QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
 
-        text = editor_scene.addText("My awesome text", QFont("Ubuntu Mono"))
+        text = self._core_scene._editor_scene.addText("My awesome text", QFont("Ubuntu Mono"))
         text.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsMovable | QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         text.setDefaultTextColor(QColor.fromRgbF(1.0, 1.0, 1.0))
 
         button = QPushButton("push button")
-        proxy_btn = editor_scene.addWidget(button)
+        proxy_btn = self._core_scene._editor_scene.addWidget(button)
         proxy_btn.setPos(0, 30)
 
         input_text = QTextEdit()
-        proxy_txtEdit = editor_scene.addWidget(input_text)
+        proxy_txtEdit = self._core_scene._editor_scene.addWidget(input_text)
         proxy_txtEdit.setFlags(QGraphicsItem.GraphicsItemFlag.ItemIsSelectable)
         proxy_txtEdit.setPos(0, 60)
 
-        line = editor_scene.addLine(-200, -200, 100, 100, outline_pen)
+        line = self._core_scene._editor_scene.addLine(-200, -200, 100, 100, outline_pen)
         line.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
 
     def loadStyleSheet(self, filename: str):

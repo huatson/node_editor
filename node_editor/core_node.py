@@ -5,22 +5,24 @@ Core Node
 # PyQt5
 from PyQt5.QtCore import QRectF, QPointF, QRect
 
+# modules
 from node_editor.editor_node import EditorNode
 from node_editor.content_node import ContentNode
 from node_editor.core_socket import Socket, ESocketType
+from node_editor.core_scene import Scene
 
 
 class Node(object):
-    def __init__(self, scene: "Scene",
+    def __init__(self, core_scene: Scene,
                  title: str = "node",
                  inputs=[],
                  outputs=[]) -> None:
-        self._scene = scene
+        self._core_scene = core_scene
         self._title = title
 
         self._content = ContentNode()
         self._editor_node = EditorNode(self, self._content)
-        self._scene.add_node(self)
+        self._core_scene.add_node(self)
 
         self._inputs = inputs
         self._outputs = outputs

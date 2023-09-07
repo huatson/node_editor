@@ -2,22 +2,26 @@
 Editor View
 """
 
+# PyQt
 from PyQt5.QtWidgets import QGraphicsView
 from PyQt5.QtGui import QPainter, QMouseEvent, QWheelEvent
 from PyQt5.QtCore import Qt, QEvent, QPoint, pyqtSignal
+
+# internal
+from node_editor.editor_scene import EditorScene
 
 
 class EditorView(QGraphicsView):
     #: pyqtSignal emitted when cursor position on the `Scene` has changed
     scenePosChanged = pyqtSignal(int, int)
 
-    def __init__(self, scene=None, parent=None):
+    def __init__(self, editor_scene: EditorScene, parent=None):
         super(EditorView, self).__init__(parent)
-        self._scene = scene
+        self._editor_scene = editor_scene
 
         # init
         self.initUI()
-        self.setScene(self._scene)
+        self.setScene(self._editor_scene)
 
         # zoom
         self._zoom_in_multiplier = 1.25

@@ -8,6 +8,8 @@ from PyQt5.QtCore import QRectF, Qt, QRect
 from node_editor.content_node import ContentNode
 import math
 
+# from node_editor.core_node import Node as NodeClass
+
 
 class EditorNode(QGraphicsItem):
     def __init__(self, core_node, content: ContentNode, parent=None) -> None:

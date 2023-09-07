@@ -8,12 +8,16 @@ from PyQt5.QtWidgets import QGraphicsScene
 from PyQt5.QtCore import QRectF, QLine
 import math
 
+# internal
+# from node_editor.core_scene import Scene as SceneClass
+
 
 class EditorScene(QGraphicsScene):
-    def __init__(self, scene, parent=None):
+    def __init__(self, core_scene, parent=None):
         super(EditorScene, self).__init__(parent)
         # core scene
-        self._core_scene = scene
+        self._core_scene = core_scene
+
         # colors
         self._color_background = QColor("#393939")
         self._color_light = QColor("#2F2F2F")
@@ -41,12 +45,14 @@ class EditorScene(QGraphicsScene):
         self.setBackgroundBrush(self._color_background)
 
     def setEditorScene(self, width: float, height: float):
+        """Set editor scene size"""
         self._scene_h = height
         self._scene_w = width
         centered = QRectF(-width//2.0, -height//2.0, width, height)
         self.setSceneRect(centered)
 
     def _draw_grid(self, painter: QPainter, rect: QRectF) -> None:
+        """draw scene grid"""
         area_left = int(math.floor(rect.left()))
         area_right = int(math.floor(rect.right()))
         area_top = int(math.floor(rect.top()))
